@@ -4,23 +4,17 @@ Summary:	Linux kernel headers for use with musl libc
 Summary(pl.UTF-8):	Nagłówki jądra Linuksa do użytku z biblioteką musl
 Name:		linux-musl-headers
 Version:	%{basever}_%{postver}
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Development
 Source0:	https://github.com/sabotage-linux/kernel-headers/releases/download/v%{basever}-%{postver}/linux-headers-%{basever}-%{postver}.tar.xz
 # Source0-md5:	cf06522cb02523e8aa11646b0c252f88
 URL:		https://github.com/sabotage-linux/kernel-headers
 AutoReqProv:	no
-BuildRequires:	perl-base
+BuildRequires:	glibc-devel
 BuildRequires:	rpmbuild(macros) >= 1.568
-BuildRequires:	rsync
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
-Requires(pretrans):	coreutils
-Obsoletes:	alsa-driver-devel
-Obsoletes:	glibc-kernel-headers
-Obsoletes:	glibc-kernheaders
-Conflicts:	lm_sensors-devel < 2.8.2-2
 ExclusiveOS:	Linux
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -66,6 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_includedir}
 mv $RPM_BUILD_ROOT%{_prefix}-musl/include $RPM_BUILD_ROOT%{_includedir}/musl
+
+# hack to provide missing headers that are compatible with musl
+install -d $RPM_BUILD_ROOT%{_includedir}/musl/sys
+cp -a %{_includedir}/sys/queue.h $RPM_BUILD_ROOT%{_includedir}/musl/sys/queue.h
 
 %clean
 rm -rf $RPM_BUILD_ROOT
