@@ -15,6 +15,7 @@ BuildRequires:	glibc-devel
 BuildRequires:	rpmbuild(macros) >= 1.568
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
+Requires:	musl-devel
 ExclusiveOS:	Linux
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -53,13 +54,14 @@ z biblioteką musl.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
 %{__make} install \
 	prefix=%{_prefix}-musl \
 	DESTDIR=$RPM_BUILD_ROOT \
 	ARCH=%{target_arch}
 
 install -d $RPM_BUILD_ROOT%{_includedir}
-mv $RPM_BUILD_ROOT%{_prefix}-musl/include $RPM_BUILD_ROOT%{_includedir}/musl
+%{__mv} $RPM_BUILD_ROOT%{_prefix}-musl/include $RPM_BUILD_ROOT%{_includedir}/musl
 
 # hack to provide missing headers that are compatible with musl
 install -d $RPM_BUILD_ROOT%{_includedir}/musl/sys
@@ -70,4 +72,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%{_includedir}/musl
+%{_includedir}/musl/asm
+%{_includedir}/musl/asm-generic
+%{_includedir}/musl/drm
+%{_includedir}/musl/linux
+%{_includedir}/musl/mtd
+%{_includedir}/musl/rdma
+%{_includedir}/musl/scsi/cxlflash_ioctl.h
+%{_includedir}/musl/scsi/scsi_bsg_fc.h
+%{_includedir}/musl/scsi/scsi_netlink*.h
+%{_includedir}/musl/scsi/fc
+%{_includedir}/musl/sound
+# this one should belong to musl-devel probably
+%{_includedir}/musl/sys/queue.h
+%{_includedir}/musl/video
+%{_includedir}/musl/xen
